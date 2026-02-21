@@ -1,1 +1,457 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
+  <title>AI Reasoning — Reasoning Under Governance</title>
+  <meta name="description" content="AI Reasoning: governance-first laboratories for reasoning architectures (chains, trees, loops, committees). One book and governed Colab notebooks implementing auditable inference: explicit state → routing → constraints → termination → stage gates → artifact logging. Not a correctness or alpha claim." />
+
+  <style>
+    :root{
+      --bg:#07080d;
+      --panel:#0f1220;
+      --panel2:#141836;
+      --text:#eef0ff;
+      --muted:#b8bddb;
+      --border:rgba(255,255,255,0.09);
+      --accent:#7aa2ff;
+      --accent2:#6ee7c8;
+      --warn:#ffd27a;
+      --shadow:0 18px 60px rgba(0,0,0,0.45);
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      background:
+        radial-gradient(900px 600px at 20% 10%, rgba(122,162,255,0.14), transparent 60%),
+        radial-gradient(800px 600px at 80% 90%, rgba(110,231,200,0.10), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      line-height:1.75;
+    }
+    a{color:var(--accent);text-decoration:none;}
+    a:hover{color:var(--accent2);text-decoration:underline;}
+    .container{max-width:1180px;margin:0 auto;padding:48px 22px 96px;}
+
+    h1{font-size:40px;margin:0 0 14px;text-transform:uppercase;letter-spacing:0.02em;}
+    h2{font-size:30px;margin:64px 0 14px;}
+    h3{font-size:19px;margin:0 0 10px;}
+    p{color:var(--muted);max-width:110ch;}
+
+    .hero{
+      padding:44px;
+      border-radius:24px;
+      background:linear-gradient(180deg, rgba(20,24,54,0.95), rgba(15,18,32,0.9));
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+    }
+
+    .callout{
+      margin-top:26px;
+      padding:22px;
+      border-radius:20px;
+      background:linear-gradient(135deg, rgba(122,162,255,0.08), rgba(110,231,200,0.06));
+      border:1px solid rgba(122,162,255,0.22);
+      color:var(--muted);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:20px;
+      margin-top:28px;
+    }
+
+    .card{
+      padding:22px;
+      border-radius:20px;
+      background:var(--panel2);
+      border:1px solid var(--border);
+      box-shadow:0 12px 34px rgba(0,0,0,0.32);
+      display:flex;
+      flex-direction:column;
+      min-height:240px;
+    }
+
+    .card p{margin:0;}
+    .card p + p{ margin-top:10px; }
+
+    .card a{
+      display:inline-block;
+      margin-top:auto;
+      padding-top:14px;
+      font-weight:800;
+      letter-spacing:0.03em;
+      text-transform:uppercase;
+      font-size:12px;
+    }
+
+    .reviewbox{
+      margin-top:28px;
+      padding:28px;
+      border-radius:22px;
+      border:1px solid rgba(255,210,122,0.35);
+      background:linear-gradient(135deg, rgba(255,210,122,0.07), rgba(122,162,255,0.06));
+    }
+
+    .stars{
+      color:var(--warn);
+      font-size:20px;
+      font-weight:900;
+      letter-spacing:0.12em;
+      margin-bottom:14px;
+    }
+
+    footer{
+      margin-top:96px;
+      padding-top:32px;
+      border-top:1px solid var(--border);
+      font-size:13px;
+      color:var(--muted);
+      text-align:center;
+    }
+
+    .pill{
+      display:inline-block;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(122,162,255,0.22);
+      background:rgba(122,162,255,0.08);
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:0.06em;
+      text-transform:uppercase;
+      margin-top:10px;
+    }
+
+    .quicklinks{
+      margin-top:20px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .btn{
+      display:inline-block;
+      padding:10px 14px;
+      border-radius:14px;
+      border:1px solid rgba(122,162,255,0.25);
+      background:rgba(122,162,255,0.08);
+      color:var(--text);
+      font-weight:800;
+      font-size:12px;
+      letter-spacing:0.05em;
+      text-transform:uppercase;
+    }
+    .btn:hover{
+      border-color:rgba(110,231,200,0.35);
+      background:rgba(110,231,200,0.10);
+      text-decoration:none;
+      color:var(--text);
+    }
+    .mutednote{
+      font-size:13px;
+      color:var(--muted);
+      margin-top:10px;
+      max-width:110ch;
+    }
+    code.inline{
+      background:rgba(255,255,255,0.06);
+      border:1px solid rgba(255,255,255,0.08);
+      padding:2px 7px;
+      border-radius:10px;
+      color:var(--text);
+      font-size:0.95em;
+    }
+  </style>
+</head>
+
+<body>
+<main class="container">
+
+<!-- INTRODUCTION -->
+<section class="hero">
+  <h1>AI Reasoning</h1>
+  <div class="pill">Reasoning Under Governance · Auditable Inference Architectures</div>
+
+  <p>
+    <strong>AI Reasoning</strong> is a governance-first laboratory for designing and reviewing
+    <strong>reasoning systems</strong> as controlled inference mechanisms—rather than persuasive chat.
+    In professional finance and institutional settings, “reasoning” can be the most dangerous feature:
+    coherent explanations can conceal unsupported leaps, silent assumptions can creep into decisions,
+    and clean narratives can bury uncertainty behind fluent structure.
+  </p>
+
+  <p>
+    This repository rejects the “trust the model” posture. It treats reasoning as an engineering discipline:
+    explicit state, explicit routing, explicit constraints, explicit termination, explicit artifacts.
+    The aim is not to create impressive prose. The aim is to create <strong>reviewable decision machinery</strong>,
+    so an independent reviewer can reconstruct what happened, why it happened, what was known,
+    what was assumed, what remains unverified, and what required escalation.
+  </p>
+
+  <p>
+    Each notebook implements governed reasoning patterns—<strong>chains, trees, loops, committees</strong>—
+    and forces them to behave like contracts: bounded behavior, stage gates, and mandatory audit bundles.
+    Outputs are deliberately marked <strong>Not verified</strong> unless and until qualified humans validate them.
+    That is not a disclaimer taped on at the end; it is the system’s operating principle.
+  </p>
+
+  <div class="callout">
+    <strong>Core premise:</strong> Capability ↑ ⇒ Risk ↑ ⇒ Controls ↑<br/>
+    <span class="mutednote">
+      If a system “works” only when you ignore gates, constraints, termination logic, or evidence rules,
+      then it does not work.
+    </span>
+  </div>
+
+  <div class="quicklinks" aria-label="Quick Links">
+    <a class="btn" href="https://github.com/alexdibol/ai-reasoning/blob/main/book/AI%20REASONING%20BOOK.pdf" target="_blank" rel="noopener">Read Book (PDF)</a>
+    <a class="btn" href="https://github.com/alexdibol/ai-reasoning/blob/main/notebooks/CHAPTER%201.ipynb" target="_blank" rel="noopener">Open Chapter 1 Notebook</a>
+    <a class="btn" href="https://github.com/alexdibol/ai-reasoning/blob/main/notebooks/CHAPTER%202.ipynb" target="_blank" rel="noopener">Open Chapter 2 Notebook</a>
+    <a class="btn" href="https://github.com/alexdibol/ai-reasoning/blob/main/notebooks/CHAPTER%203.ipynb" target="_blank" rel="noopener">Open Chapter 3 Notebook</a>
+    <a class="btn" href="https://github.com/alexdibol/ai-reasoning/blob/main/notebooks/CHAPTER%204.ipynb" target="_blank" rel="noopener">Open Chapter 4 Notebook</a>
+    <a class="btn" href="https://github.com/alexdibol/ai-reasoning/blob/main/notebooks/CHAPTER%205.ipynb" target="_blank" rel="noopener">Open Chapter 5 Notebook</a>
+  </div>
+
+  <p class="mutednote">
+    Notebook path convention: <code class="inline">/notebooks/CHAPTER%20N.ipynb</code> (GitHub URL-encoded spacing).
+  </p>
+</section>
+
+<!-- BOOK -->
+<section>
+  <h2>The Book</h2>
+
+  <p>
+    The book is the governing specification. It defines what “good” means in this repository:
+    not eloquence, not confidence, not “helpfulness,” but controlled inference under professional accountability.
+    The notebooks are the operational proofs: executable laboratories that implement the mechanisms and
+    enforce the acceptance gates described in the book.
+  </p>
+
+  <div class="grid">
+    <div class="card">
+      <h3>AI Reasoning Book (PDF)</h3>
+      <p>
+        Definitions, reasoning shapes, failure modes, governance controls, and acceptance gates.
+        The emphasis is traceability: how to prevent silent assumption creep, scope drift, and persuasive
+        overreach; how to force explicit termination; and how to produce artifacts that can be reviewed
+        independent of the model’s narrative.
+      </p>
+      <p>
+        Operating posture: outputs are mechanisms to be inspected—not truths to be trusted.
+      </p>
+      <a href="https://github.com/alexdibol/ai-reasoning/blob/main/book/AI%20REASONING%20BOOK.pdf" target="_blank" rel="noopener">
+        Read Book (PDF)
+      </a>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Operating rule:</strong> Interpret notebook outcomes as governed experimental outputs.
+    They are tagged <strong>Not verified</strong> by design until independently reviewed and replicated.
+  </div>
+</section>
+
+<!-- CHAPTERS / NOTEBOOKS -->
+<section>
+  <h2>Governed Notebooks (Reasoning Patterns as Controllers)</h2>
+
+  <p>
+    The notebooks are not “examples.” They are controlled reasoning systems that must pass
+    evidence discipline and stage gates. Each chapter notebook operationalizes a reasoning pattern
+    and produces artifacts that make the run reconstructable: what the system believed, what it assumed,
+    what remained open, and why the process stopped.
+  </p>
+
+  <div class="grid">
+
+    <div class="card">
+      <h3>Chapter 1 — Why Reasoning Needs Governance</h3>
+      <p>
+        Establishes the central hazard: reasoning can look like verification. The notebook forces an explicit
+        separation of <strong>facts_provided</strong>, <strong>assumptions</strong>, and <strong>open_items</strong>,
+        and adopts a conservative refusal posture when evidence is missing. The goal is not “more output” but
+        safer termination and clean escalation.
+      </p>
+      <a href="https://github.com/alexdibol/ai-reasoning/blob/main/notebooks/CHAPTER%201.ipynb" target="_blank" rel="noopener">Open Notebook</a>
+    </div>
+
+    <div class="card">
+      <h3>Chapter 2 — Chains: Stepwise Reasoning as a Contract</h3>
+      <p>
+        Implements chain reasoning with explicit intermediate state and dependency tracking.
+        Each step must bind to declared inputs, and unsupported leaps are treated as control failures.
+        “Stop-if” rules and structured outputs prevent narrative smoothing from hiding uncertainty.
+      </p>
+      <a href="https://github.com/alexdibol/ai-reasoning/blob/main/notebooks/CHAPTER%202.ipynb" target="_blank" rel="noopener">Open Notebook</a>
+    </div>
+
+    <div class="card">
+      <h3>Chapter 3 — Trees: Branching Scenarios and Decision Topologies</h3>
+      <p>
+        Treats branching as a governed operation: when to branch, how many branches, how to prune,
+        and how to keep assumptions isolated across scenarios. The deliverable is a decision topology
+        a reviewer can inspect: explored paths, pruned paths, and the criteria used.
+      </p>
+      <a href="https://github.com/alexdibol/ai-reasoning/blob/main/notebooks/CHAPTER%203.ipynb" target="_blank" rel="noopener">Open Notebook</a>
+    </div>
+
+    <div class="card">
+      <h3>Chapter 4 — Loops: Iterative Refinement With Convergence Discipline</h3>
+      <p>
+        Makes iteration safe: bounded retries, explicit improvement targets, and delta-logging between iterations.
+        If open items cannot be closed, the system escalates rather than polishing prose. Termination reasons
+        become a first-class artifact—not an afterthought.
+      </p>
+      <a href="https://github.com/alexdibol/ai-reasoning/blob/main/notebooks/CHAPTER%204.ipynb" target="_blank" rel="noopener">Open Notebook</a>
+    </div>
+
+    <div class="card">
+      <h3>Chapter 5 — Committees: Multi-Perspective Deliberation With Dissent Preservation</h3>
+      <p>
+        Implements role-based deliberation with mandates and dissent preservation. The goal is not consensus-by-averaging,
+        but governed synthesis: what each role accepted, rejected, or escalated, and why. The final output is board-facing
+        while remaining artifact-traceable and explicit about what is unverified.
+      </p>
+      <a href="https://github.com/alexdibol/ai-reasoning/blob/main/notebooks/CHAPTER%205.ipynb" target="_blank" rel="noopener">Open Notebook</a>
+    </div>
+
+  </div>
+
+  <div class="callout">
+    <strong>Notebook invariant:</strong> deterministic setup where applicable · explicit state · bounded loops ·
+    explicit termination · stage-gate decisioning · mandatory artifacts · all outputs marked
+    <strong>verification_status="Not verified"</strong>.
+  </div>
+</section>
+
+<!-- WHAT THE SYSTEM ENFORCES -->
+<section>
+  <h2>What Every Run Produces (Minimum Artifact Standard)</h2>
+
+  <p>
+    Every notebook is designed to be reviewable by artifact inspection. At minimum, each run produces
+    a reproducibility and governance bundle that enables independent reconstruction.
+  </p>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Run Manifest</h3>
+      <p>
+        <code class="inline">run_manifest.json</code> captures seed/config, versions, and an environment fingerprint
+        so results can be reproduced and compared without relying on memory or narrative.
+      </p>
+      <p class="mutednote">
+        The manifest is the “receipt.” If you cannot reproduce the run, you cannot trust the conclusion.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Final State + Decision</h3>
+      <p>
+        <code class="inline">final_state.json</code> records what the system believed at termination.
+        <code class="inline">decision.json</code> records <strong>advance / revise / reject</strong> with explicit reasons.
+      </p>
+      <p class="mutednote">
+        Decisions must be explainable by artifacts—not by post-hoc rationalization.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Risk Log + Deliverables</h3>
+      <p>
+        <code class="inline">risk_log.json</code> records triggered risks and applied controls.
+        <code class="inline">artifacts/</code> contains any generated reports, tables, or exhibits.
+      </p>
+      <p class="mutednote">
+        When evidence is missing, the correct deliverable is a verification task list, not persuasive prose.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- GOVERNANCE -->
+<section>
+  <h2>Shared Governance Spine</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Generation ≠ Verification</h3>
+      <p>
+        Outputs are marked <strong>Not verified</strong> unless a qualified human validates them.
+        The system is designed to preserve uncertainty instead of hiding it.
+      </p>
+      <a href="https://github.com/alexdibol/ai-reasoning/blob/main/book/AI%20REASONING%20BOOK.pdf" target="_blank" rel="noopener">See Governance Spec</a>
+    </div>
+
+    <div class="card">
+      <h3>Facts vs Assumptions vs Open Items</h3>
+      <p>
+        Every governed output separates supported inputs from declared assumptions and open questions.
+        Silent assumption creep is treated as a failure mode.
+      </p>
+      <a href="https://github.com/alexdibol/ai-reasoning/blob/main/notebooks/CHAPTER%201.ipynb" target="_blank" rel="noopener">See Chapter 1 Lab</a>
+    </div>
+
+    <div class="card">
+      <h3>Stop is a Feature</h3>
+      <p>
+        Termination is explicit. Refusal and escalation are correct outcomes when evidence is insufficient,
+        scope is violated, or gates fail.
+      </p>
+      <a href="https://github.com/alexdibol/ai-reasoning/blob/main/notebooks/CHAPTER%204.ipynb" target="_blank" rel="noopener">See Loop Controls</a>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Professional posture:</strong> Responsibility never leaves the human practitioner.
+    This repository provides mechanisms and artifacts—not authority.
+  </div>
+</section>
+
+<!-- DISCLAIMERS -->
+<section>
+  <h2>Licensing, Governance & AI Use Disclosure</h2>
+
+  <div class="callout">
+    <p>
+      <strong>Educational / Non-Reliance:</strong> All materials are provided for educational and research purposes only.
+      Nothing in this repository constitutes investment, trading, legal, tax, accounting, audit, or compliance advice.
+    </p>
+
+    <p>
+      <strong>Not verified:</strong> Unless explicitly stated otherwise in a specific artifact, treat all outputs, claims,
+      calculations, citations, and conclusions as <strong>Not verified</strong>.
+    </p>
+
+    <p>
+      <strong>Confidentiality and data hygiene:</strong> Do not paste confidential, proprietary, regulated, or personally
+      identifying information into external systems. Use anonymization/redaction and minimum-necessary inputs by default.
+    </p>
+
+    <p>
+      <strong>No fabricated sources or claims:</strong> Zero tolerance for invented citations, performance claims, fees,
+      terms, or consequences. When evidence is missing, the correct output is a verification task list, not persuasive narrative.
+    </p>
+
+    <p>
+      <strong>License:</strong> This project is released under the MIT License. Preserve copyright and license notices.
+    </p>
+
+    <p>
+      <strong>Copyright (c) 2026 Alejandro Reynoso</strong>
+    </p>
+  </div>
+</section>
+
+<footer>
+  AI Reasoning · Reasoning Under Governance · Governance-First · Auditable · Reproducible · Human-Accountable
+</footer>
+
+</main>
+</body>
+</html>
